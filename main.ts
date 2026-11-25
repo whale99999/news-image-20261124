@@ -36,4 +36,14 @@ if (isPng) {
   }
 }
 
-copyFileSync(source, join(outDir, 'entry.png'));
+const outPath = join(outDir, 'entry.png');
+copyFileSync(source, outPath);
+
+// Read the output back and compare it byte-for-byte with the input: the copy
+// must be exact, so any difference here means the entry was corrupted.
+const copied = readFileSync(outPath);
+if (!bytes.equals(copied)) {
+  console.error('entry.png copy differs from the source — aborting');
+  process.exit(1);
+}
+console.log('entry.png copied byte-for-byte to', outPath);
